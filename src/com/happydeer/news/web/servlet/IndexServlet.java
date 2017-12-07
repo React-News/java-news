@@ -27,7 +27,7 @@ public class IndexServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//跳转首页
-		
+		response.sendRedirect("index.html");
 	}
 
 	/**

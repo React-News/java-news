@@ -11,10 +11,8 @@ public class DBUtil {
 	
 	private static Properties props = null;
 	
-	//初始化，加载dbconfig.properties到props中
 	static {
 		try {
-			//加载配置文件
 			InputStream in = DBUtil.class.getClassLoader()
 					.getResourceAsStream("dbconfig.properties");
 			props = new Properties();
@@ -23,14 +21,12 @@ public class DBUtil {
 			throw new RuntimeException(e);
 		}
 		try {
-			//加载驱动类
 			Class.forName(props.getProperty("driver"));
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	//返回数据库连接
 	public static Connection getConnection() throws SQLException {
 		
 		return DriverManager.getConnection(props.getProperty("url"),

@@ -10,4 +10,5 @@ public interface UserDao {
 	public void modifyUser(User user);
 	public List<User> queryAll();
 	public User findUserByTelNum(String telNum);
+	public User findUserById(int uID);
 }

@@ -10,12 +10,12 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private int id;
-	private String name;
+	private String name = "热心网友";
 	private String avatar;
 	private String sex;
 	private int age;
 	private String describe;
-	private String authority;
+	private String type;
 	private String passwd;
 	private String telnum;
 	public int getId() {
@@ -54,11 +54,11 @@ public class User implements Serializable {
 	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
-	public String getAuthority() {
-		return authority;
+	public String getType() {
+		return type;
 	}
-	public void setAuthority(String authority) {
-		this.authority = authority;
+	public void setType(String type) {
+		this.type = type;
 	}
 	public String getPasswd() {
 		return passwd;
@@ -75,7 +75,7 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", avatar=" + avatar + ", sex=" + sex + ", age=" + age
-				+ ", describe=" + describe + ", authority=" + authority + ", passwd=" + passwd + ", telnum=" + telnum
+				+ ", describe=" + describe + ", type=" + type + ", passwd=" + passwd + ", telnum=" + telnum
 				+ "]";
 	}
 	

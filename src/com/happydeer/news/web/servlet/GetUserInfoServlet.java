@@ -15,19 +15,18 @@ import com.happydeer.news.domain.User;
 import com.happydeer.news.service.UserService;
 import com.happydeer.news.service.impl.UserServiceImpl;
 import com.happydeer.news.utils.JSONResponse;
-import com.happydeer.news.utils.StringUtil;
 
 /**
- * Servlet implementation class RegisterServlet
+ * Servlet implementation class GetUserInfo
  */
-@WebServlet("/register")
-public class RegisterServlet extends HttpServlet {
+@WebServlet("/getUserInfo")
+public class GetUserInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RegisterServlet() {
+    public GetUserInfoServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,39 +35,26 @@ public class RegisterServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		JSONObject object = null;
-		String uTelNum = null;
-		String uPasswd = null;
+		int uID = Integer.parseInt(request.getParameter("uID"));
+		UserService userService = new UserServiceImpl();
+		User user = userService.getInfo(uID);
+		JSONObject object = new JSONObject();
 		try {
-			object = StringUtil.getJSON(request);
-			uTelNum = object.getString("uTelNum");
-			uPasswd = object.getString("uPasswd");
+			object.put("uID", user.getId());
+			object.put("uName", user.getName());
+			object.put("uTelNum", user.getTelnum());
+			object.put("uAvatar", user.getAvatar());
+			object.put("uSex", user.getSex());
+			object.put("uAge", user.getAge());
+			object.put("uDescribe",user.getDescribe());
+			object.put("uAuthority", user.getType());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
-		UserService userService = new UserServiceImpl();
-		User user = userService.register(uTelNum, uPasswd);
 		JSONResponse jsonResponse = new JSONResponse();
-		if(user==null) {
-			jsonResponse.setStatus(JSONResponse.CILENTEORR);
-			jsonResponse.setMsg("该手机号已注册");
-			jsonResponse.setData(null);
-		}else {
-			jsonResponse.setStatus(JSONResponse.OK);
-			jsonResponse.setMsg("注册成功");
-			JSONObject data = new JSONObject();
-			System.out.println(user.toString());
-			try {
-				data.put("uID", user.getId());
-				data.put("uTelNum", user.getTelnum());
-				data.put("uPasswd", user.getPasswd());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			jsonResponse.setData(data);
-		}
+		jsonResponse.setStatus(JSONResponse.OK);
+		jsonResponse.setMsg("获取用户信息成功");
+		jsonResponse.setData(object);
 		response.setContentType("text/json;charset=utf-8");
 		response.getWriter().println(jsonResponse.toJSONString(JSONResponse.ONE));
 	}
