@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.happydeer.news.domain.User;
+import com.happydeer.news.pojo.domain.User;
 import com.happydeer.news.service.UserService;
 import com.happydeer.news.service.impl.UserServiceImpl;
 import com.happydeer.news.utils.JSONResponse;

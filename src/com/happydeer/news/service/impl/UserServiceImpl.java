@@ -2,7 +2,7 @@ package com.happydeer.news.service.impl;
 
 import com.happydeer.news.dao.UserDao;
 import com.happydeer.news.dao.impl.UserDaoImpl;
-import com.happydeer.news.domain.User;
+import com.happydeer.news.pojo.domain.User;
 import com.happydeer.news.service.UserService;
 
 public class UserServiceImpl implements UserService {

@@ -11,23 +11,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.happydeer.news.pojo.domain.User;
-import com.happydeer.news.service.UserService;
-import com.happydeer.news.service.impl.UserServiceImpl;
+import com.happydeer.news.pojo.domain.New;
+import com.happydeer.news.service.NewService;
+import com.happydeer.news.service.impl.NewServiceImpl;
 import com.happydeer.news.utils.JSONResponse;
 import com.happydeer.news.utils.StringUtil;
 
 /**
- * Servlet implementation class RegisterServlet
+ * Servlet implementation class AddNewsServlet
  */
-@WebServlet("/register")
-public class RegisterServlet extends HttpServlet {
+@WebServlet("/addNews")
+public class AddNewsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RegisterServlet() {
+    public AddNewsServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,41 +36,30 @@ public class RegisterServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		JSONObject object = null;
-		String uTelNum = null;
-		String uPasswd = null;
+		New NEW = new New();
 		try {
 			object = StringUtil.getJSON(request);
-			uTelNum = object.getString("uTelNum");
-			uPasswd = object.getString("uPasswd");
+			NEW.setUID(object.getInt("uID"));
+			NEW.setTitle(object.getString("nTitle"));
+			NEW.setType(object.getString("nType"));
+			NEW.setImg(object.getString("nImg"));
+			NEW.setContent(object.getString("nContent"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
-		UserService userService = new UserServiceImpl();
-		User user = userService.register(uTelNum, uPasswd);
+		NewService newService = new NewServiceImpl();
+		int result = newService.addNews(NEW);
 		JSONResponse jsonResponse = new JSONResponse();
-		if(user==null) {
-			jsonResponse.setStatus(JSONResponse.CILENTEORR);
-			jsonResponse.setMsg("该手机号已注册");
-			jsonResponse.setData(null);
-		}else {
+		if(result>0) {
 			jsonResponse.setStatus(JSONResponse.OK);
-			jsonResponse.setMsg("注册成功");
-			JSONObject data = new JSONObject();
-			System.out.println(user.toString());
-			try {
-				data.put("uID", user.getId());
-				data.put("uTelNum", user.getTelnum());
-				data.put("uPasswd", user.getPasswd());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			jsonResponse.setData(data);
+			jsonResponse.setMsg("新闻添加成功");
+		}else {
+			jsonResponse.setStatus(JSONResponse.SERVEREORR);
+			jsonResponse.setMsg("新闻添加失败");
 		}
 		response.setContentType("text/json;charset=utf-8");
-		response.getWriter().println(jsonResponse.toJSONString(JSONResponse.ONE));
+		response.getWriter().println(jsonResponse.toJSONString(JSONResponse.NONE));
 	}
 
 	/**

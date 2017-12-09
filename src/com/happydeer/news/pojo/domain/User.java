@@ -1,4 +1,4 @@
-package com.happydeer.news.domain;
+package com.happydeer.news.pojo.domain;
 
 import java.io.Serializable;
 

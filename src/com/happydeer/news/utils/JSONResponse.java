@@ -20,6 +20,7 @@ public class JSONResponse {
 	 */
 	public static final String ONE = "OBJECT";
 	public static final String MORE = "ARRAY";
+	public static final String NONE = "ZERO";
 	
 	private String status;
 	private String msg;
@@ -58,6 +59,7 @@ public class JSONResponse {
 			object.put("data", this.getData());
 			else if(MORE.equals(type))
 			object.put("data", this.getDatas());	
+			else if(NONE.equals(type));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			System.out.println("json响应创建失败！！！");

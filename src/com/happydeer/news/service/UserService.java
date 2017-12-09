@@ -1,6 +1,6 @@
 package com.happydeer.news.service;
 
-import com.happydeer.news.domain.User;
+import com.happydeer.news.pojo.domain.User;
 
 public interface UserService {
 	public User register(String uTelNum,String uPasswd);

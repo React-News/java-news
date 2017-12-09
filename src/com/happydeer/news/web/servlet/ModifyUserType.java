@@ -1,7 +1,6 @@
 package com.happydeer.news.web.servlet;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,19 +16,17 @@ import com.happydeer.news.service.impl.UserServiceImpl;
 import com.happydeer.news.utils.JSONResponse;
 import com.happydeer.news.utils.StringUtil;
 
-import javafx.print.JobSettings;
-
 /**
- * Servlet implementation class ModifyUserInfoServlet
+ * Servlet implementation class ModifyUserType
  */
-@WebServlet("/editUserInfo")
-public class ModifyUserInfoServlet extends HttpServlet {
+@WebServlet("/editUserType")
+public class ModifyUserType extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ModifyUserInfoServlet() {
+    public ModifyUserType() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,48 +37,23 @@ public class ModifyUserInfoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		JSONObject object = null;
 		int uID = 0;
-		String uName = "";
-		String uSex = "";
-		int uAge = 0;
-		String uAvatar = "";
-		String uDescribe = "";
+		String uType = "";
 		try {
 			object = StringUtil.getJSON(request);
 			uID = object.getInt("uID");
-			uName = object.getString("uName");
-			uSex = object.getString("uSex");
-			uAge = object.getInt("uAge");
-			uAvatar = object.getString("uAvatar");
-			uDescribe = object.getString("uDescribe");
+			uType = object.getString("uType");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		UserService userService = new UserServiceImpl();
 		User user = userService.getInfo(uID);
-		user.setName(uName);
-		user.setSex(uSex);
-		user.setAge(uAge);
-		user.setAvatar(uAvatar);
-		user.setDescribe(uDescribe);
+		user.setType(uType);
+
 		User u = userService.modify(user);
 		JSONResponse jsonResponse = new JSONResponse();
 		if(u!=null) {
 			jsonResponse.setStatus(JSONResponse.OK);
 			jsonResponse.setMsg("用户信息修改成功");
-			JSONObject data = new JSONObject();
-			try {
-				data.put("uID", u.getId());
-				data.put("uName", u.getName());
-				data.put("uTelNum", u.getTelnum());
-				data.put("uAvatar", u.getAvatar());
-				data.put("uSex", u.getSex());
-				data.put("uAge", u.getAge());
-				data.put("uDescribe", u.getDescribe());
-				data.put("uAuthority", u.getType());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			jsonResponse.setData(data);
 		}else {
 			jsonResponse.setStatus(JSONResponse.CILENTEORR);
 			jsonResponse.setMsg("用户信息修改失败");

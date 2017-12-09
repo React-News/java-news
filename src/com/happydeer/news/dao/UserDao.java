@@ -2,13 +2,14 @@ package com.happydeer.news.dao;
 
 import java.util.List;
 
-import com.happydeer.news.domain.User;
+import com.happydeer.news.pojo.domain.User;
 
 public interface UserDao {
-	public void addUser(User user);
-//	public void delUser();
-	public void modifyUser(User user);
-	public List<User> queryAll();
-	public User findUserByTelNum(String telNum);
-	public User findUserById(int uID);
+	void addUser(User user);
+//	void delUser();
+	void modifyUser(User user);
+	List<User> queryAll();
+	List<User> queryMore(int count,int total);
+	User findUserByTelNum(String telNum);
+	User findUserById(int uID);
 }

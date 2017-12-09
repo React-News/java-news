@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import com.happydeer.news.dao.UserDao;
-import com.happydeer.news.domain.User;
+import com.happydeer.news.pojo.domain.User;
 import com.happydeer.news.utils.DBUtil;
 
 public class UserDaoImpl implements UserDao {
@@ -215,6 +215,49 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 		return user;
+	}
+
+	@Override
+	public List<User> queryMore(int count,int total) {
+		Connection con = null;
+		PreparedStatement prest = null;
+		ResultSet rs = null;
+		List<User> list = null;
+		try {
+			con = DBUtil.getConnection();
+			String sql = "select * from User offset=? limit=?";
+			prest = con.prepareStatement(sql);
+			prest.setInt(1, total);
+			prest.setInt(2, count);
+			rs = prest.executeQuery();
+			while (rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt(1));
+				user.setName(rs.getString(2));
+				user.setAvatar(rs.getString(3));
+				user.setSex(rs.getString(4));
+				user.setAge(rs.getInt(5));
+				user.setDescribe(rs.getString(6));
+				user.setType(rs.getString(7));
+				user.setPasswd(rs.getString(8));
+				user.setTelnum(rs.getString(9));
+				list.add(user);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (prest != null)
+					prest.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				throw new RuntimeException();
+			}
+		}
+		return list;
 	}
 
 }
