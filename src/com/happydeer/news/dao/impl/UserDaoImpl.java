@@ -91,6 +91,7 @@ public class UserDaoImpl implements UserDao {
 		List<User> list = null;
 		try {
 			con = DBUtil.getConnection();
+			st = con.createStatement();
 			String sql = "select * from User where uID > 1";
 			rs = st.executeQuery(sql);
 			while (rs.next()) {

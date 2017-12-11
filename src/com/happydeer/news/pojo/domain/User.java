@@ -72,13 +72,6 @@ public class User implements Serializable {
 	public void setTelnum(String telnum) {
 		this.telnum = telnum;
 	}
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", avatar=" + avatar + ", sex=" + sex + ", age=" + age
-				+ ", describe=" + describe + ", type=" + type + ", passwd=" + passwd + ", telnum=" + telnum
-				+ "]";
-	}
-	
-	
 
+	
 }

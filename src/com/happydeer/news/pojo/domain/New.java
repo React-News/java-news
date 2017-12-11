@@ -17,7 +17,7 @@ public class New implements Serializable {
 	private String type;
 	private String img;
 	private String content;
-	private Date time;
+	private Date time = new Date();
 	public int getId() {
 		return id;
 	}
@@ -55,16 +55,12 @@ public class New implements Serializable {
 		this.content = content;
 	}
 	public Date getTime() {
-		return new Date();
+		return time;
 	}
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	@Override
-	public String toString() {
-		return "New [id=" + id + ", UID=" + UID + ", title=" + title + ", type=" + type + ", img=" + img + ", content="
-				+ content + ", time=" + time + "]";
-	}
+
 
 	
 	

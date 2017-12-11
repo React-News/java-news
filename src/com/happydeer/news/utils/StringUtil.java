@@ -31,5 +31,12 @@ public class StringUtil {
 		JSONObject object = new JSONObject(json);
 		return object;
 	}
-	
+	/**
+	 * 获取字符串，如不符合条件，赋默认值
+	 */
+	public static String getString(String s1,String s2) {
+		if(null==s1||s1.equals(""))
+			return s2;
+		return s1;
+	}
 }

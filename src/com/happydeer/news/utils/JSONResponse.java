@@ -1,5 +1,6 @@
 package com.happydeer.news.utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +26,7 @@ public class JSONResponse {
 	private String status;
 	private String msg;
 	private JSONObject data;
-	private JSONObject[] datas;
+	private JSONArray datas;
 	public String getStatus() {
 		return status;
 	}
@@ -44,10 +45,10 @@ public class JSONResponse {
 	public void setData(JSONObject data) {
 		this.data = data;
 	}
-	public JSONObject[] getDatas() {
+	public JSONArray getDatas() {
 		return datas;
 	}
-	public void setDatas(JSONObject[] datas) {
+	public void setDatas(JSONArray datas) {
 		this.datas = datas;
 	}
 	public JSONObject toJSONString(String type) {
