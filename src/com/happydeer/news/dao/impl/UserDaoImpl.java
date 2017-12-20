@@ -5,11 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.happydeer.news.dao.UserDao;
+import com.happydeer.news.pojo.datatransfer.UserListUpDto;
+import com.happydeer.news.pojo.domain.New;
 import com.happydeer.news.pojo.domain.User;
 import com.happydeer.news.utils.DBUtil;
+import com.happydeer.news.utils.StringUtil;
 
 public class UserDaoImpl implements UserDao {
 	
@@ -259,6 +263,96 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public List<User> queryAllByDto(UserListUpDto upDto) {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		List<User> list = new ArrayList<>();
+		try {
+			con = DBUtil.getConnection();
+			st = con.createStatement();
+			String sql = "select * from user where uID>0";
+			if(!"".equals(upDto.getKeywd()))sql=sql+" and uName like '%"+upDto.getKeywd()+"%'";
+			String[] types = upDto.getTypes();
+			if(types.length>0) sql = sql+" and uType in"+StringUtil.merge(types);
+			String[] sex = upDto.getSex();
+			if(sex.length>0) sql = sql+" and uSex in"+StringUtil.merge(sex);
+			if(upDto.getPageSize()>0) {
+				int offset = (upDto.getCurrentPage()-1)*upDto.getPageSize();
+				int limit = upDto.getPageSize();
+				sql=sql+" limit "+limit+" offset "+offset;
+			}
+			System.out.println(sql);
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt(1));
+				user.setName(rs.getString(2));
+				user.setAvatar(rs.getString(3));
+				user.setSex(rs.getString(4));
+				user.setAge(rs.getShort(5));
+				user.setDescribe(rs.getString(6));
+				user.setType(rs.getString(7));
+				user.setPasswd(rs.getString(8));
+				user.setTelnum(rs.getString(9));
+				list.add(user);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				throw new RuntimeException();
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public int countByDto(UserListUpDto upDto) {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int result = 0;
+		try {
+			con = DBUtil.getConnection();
+			st = con.createStatement();
+			String sql = "select count(*) from user where uID>0";
+			if(!"".equals(upDto.getKeywd()))sql=sql+" and uName like '%"+upDto.getKeywd()+"%'";
+			String[] types = upDto.getTypes();
+			if(types.length>0) sql = sql+" and uType in"+StringUtil.merge(types);
+			String[] sex = upDto.getSex();
+			if(sex.length>0) sql = sql+" and uSex in"+StringUtil.merge(sex);
+
+			System.out.println(sql);
+			rs = st.executeQuery(sql);
+			if (rs.next()) result = rs.getInt(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				throw new RuntimeException();
+			}
+		}
+		return result;
 	}
 
 }

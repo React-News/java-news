@@ -12,7 +12,7 @@ public class Review implements Serializable {
 	private int NID;
 	private String content;
 	private int PID;
-	private Date time = new Date();
+	private Date time;
 	public int getId() {
 		return id;
 	}

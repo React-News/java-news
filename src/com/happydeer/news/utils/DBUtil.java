@@ -33,5 +33,9 @@ public class DBUtil {
 							 props.getProperty("usename"),
 							 props.getProperty("password"));
 	}
+	
+	public static void main(String[] args) throws SQLException {
+		System.out.println(getConnection());
+	}
 
 }

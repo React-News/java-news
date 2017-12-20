@@ -11,25 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.happydeer.news.pojo.datatransfer.CreaterInfo;
-import com.happydeer.news.pojo.datatransfer.NewInfoDto;
-import com.happydeer.news.service.NewService;
-import com.happydeer.news.service.impl.NewServiceImpl;
+import com.happydeer.news.service.ReviewService;
+import com.happydeer.news.service.impl.ReviewServiceImpl;
 import com.happydeer.news.utils.JSONResponse;
 import com.happydeer.news.utils.StringUtil;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 /**
- * Servlet implementation class GetNewInfoServlet
+ * Servlet implementation class DeleteReviewServlet
  */
-@WebServlet("/newsDetail")
-public class GetNewInfoServlet extends HttpServlet {
+@WebServlet("/deleteComment")
+public class DeleteReviewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetNewInfoServlet() {
+    public DeleteReviewServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,39 +36,31 @@ public class GetNewInfoServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		JSONObject object = null;
-		int nID = 0;
+		int rID = 0;
 		try {
 			object = StringUtil.getJSON(request);
-			nID = Integer.parseInt(object.getString("nID"));
+			rID = object.getInt("rID");
 		} catch (NumberFormatException | JSONException e) {
 			e.printStackTrace();
 		}
-		NewService newService = new NewServiceImpl();
-		NewInfoDto dto = newService.getNewInfo(nID);
+		ReviewService reviewService = new ReviewServiceImpl();
+		boolean result = reviewService.cancel(rID);
+		System.out.println(result);
 		JSONResponse jsonResponse = new JSONResponse();
-		if(null!=dto) {
+		if(result) {
 			jsonResponse.setStatus(JSONResponse.OK);
-			jsonResponse.setMsg("查询新闻信息成功");
-			JSONObject data = new JSONObject();
-			try {
-				data.put("nID",dto.getId());
-				data.put("nTitle", dto.getTitle());
-				data.put("nType", dto.getType());
-				data.put("nImg", dto.getImg());
-				data.put("nContent", dto.getContent());
-				data.put("nCreatedAt", dto.getTime());
-				data.put("commentNum", dto.getReviewSize());
-				data.put("starNum", dto.getCollectionSize());
-				CreaterInfo createrInfo = dto.getCreaterInfo();
-				JSONObject obj = new JSONObject();
-				obj.put("uID",createrInfo.getId());
-				obj.put("uName", createrInfo.getName());
-				obj.put("uAvatar", createrInfo.getAvatar());
-				data.put("nCreaterInfo", createrInfo);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			jsonResponse.setMsg("删除评论成功");
+		}else {
+			jsonResponse.setStatus(JSONResponse.CILENTEORR);
+			jsonResponse.setMsg("删除评论失败");
 		}
+		JSONObject data = new JSONObject();
+		try {
+			data.put("rID", rID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		jsonResponse.setData(data);
 		response.setContentType("text/json;charset=utf-8");
 		response.getWriter().println(jsonResponse.toJSONString(JSONResponse.ONE));
 	}

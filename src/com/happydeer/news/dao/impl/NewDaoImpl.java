@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.happydeer.news.dao.NewDao;
 import com.happydeer.news.pojo.datatransfer.NewListUpDto;
 import com.happydeer.news.pojo.domain.New;
-import com.happydeer.news.pojo.domain.User;
 import com.happydeer.news.utils.DBUtil;
+import com.happydeer.news.utils.StringUtil;
 
 public class NewDaoImpl implements NewDao {
 
@@ -31,7 +32,7 @@ public class NewDaoImpl implements NewDao {
 			prest.setString(3, NEW.getType());
 			prest.setString(4, NEW.getImg());
 			prest.setString(5, NEW.getContent());
-			prest.setTimestamp(6, new Timestamp(NEW.getTime().getTime()));
+			prest.setTimestamp(6, new Timestamp(new Date().getTime()));
 			result = prest.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("查询异常");
@@ -101,11 +102,15 @@ public class NewDaoImpl implements NewDao {
 		ResultSet rs = null;
 		List<New> list = new ArrayList<>();
 		try {
+			System.out.println("begin");
 			con = DBUtil.getConnection();
+			System.out.println("end");
 			st = con.createStatement();
 			String sql = "select * from new where nID>0";
 			if(upDto.getUID()!=-1)sql=sql+" and uID="+upDto.getUID();
 			if(!"".equals(upDto.getKeywd()))sql=sql+" and nTitle like '%"+upDto.getKeywd()+"%'";
+			String[] types = upDto.getTypes();
+			if(types.length>0) sql = sql+" and nType in"+StringUtil.merge(types);
 			if(upDto.getPageSize()>0) {
 				int offset = (upDto.getCurrentPage()-1)*upDto.getPageSize();
 				int limit = upDto.getPageSize();
@@ -186,6 +191,73 @@ public class NewDaoImpl implements NewDao {
 			}
 		}
 		return NEW;
+	}
+
+
+	@Override
+	public int removeNew(int nID) {
+		Connection con = null;
+		PreparedStatement prest = null;
+		int result = 0;
+		try {
+			con = DBUtil.getConnection();
+			String sql = "delete from new where nID=?";
+			prest = con.prepareStatement(sql);
+			prest.setInt(1, nID);
+			result = prest.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("查询异常");
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (prest != null)
+					prest.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				System.out.println("查询异常");
+				e.printStackTrace();
+				throw new RuntimeException();
+			}
+		}
+		return result;
+	}
+
+
+	@Override
+	public int countByDto(NewListUpDto upDto) {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int result = 0;
+		try {
+			con = DBUtil.getConnection();
+			st = con.createStatement();
+			String sql = "select count(*) from new where nID>0";
+			if(upDto.getUID()!=-1)sql=sql+" and uID="+upDto.getUID();
+			if(!"".equals(upDto.getKeywd()))sql=sql+" and nTitle like '%"+upDto.getKeywd()+"%'";
+			String[] types = upDto.getTypes();
+			if(types.length>0) sql = sql+" and nType in"+StringUtil.merge(types);
+			System.out.println(sql);
+			rs = st.executeQuery(sql);
+			if(rs.next())result = rs.getInt(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				throw new RuntimeException();
+			}
+		}
+		return result;
 	}
 
 

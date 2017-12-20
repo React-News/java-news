@@ -19,7 +19,7 @@ import com.happydeer.news.utils.JSONResponse;
 /**
  * Servlet implementation class GetUserInfo
  */
-@WebServlet("/getUserInfo")
+@WebServlet("/userInfo")
 public class GetUserInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

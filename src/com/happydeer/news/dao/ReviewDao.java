@@ -13,9 +13,10 @@ public interface ReviewDao {
 	public int removeReviewByUID(int uID);
 	//得到某一条新闻的评论数
 	public int countByNID(int nID);
-	//获取某一条新闻根评论列表
+	//获取某一条新闻一级评论列表
 	public List<Review> queryReviewListByNID(int nID);
-	//通过某一条根评论的id获取回复列表
+	//二级评论
 	public List<Review> queryPReviewListByRID(int rID);
+	public List<Review> queryMyReview(int uID);
 	
 }

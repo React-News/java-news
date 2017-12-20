@@ -11,23 +11,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.happydeer.news.pojo.domain.New;
-import com.happydeer.news.service.NewService;
-import com.happydeer.news.service.impl.NewServiceImpl;
+import com.happydeer.news.pojo.domain.Review;
+import com.happydeer.news.service.ReviewService;
+import com.happydeer.news.service.impl.ReviewServiceImpl;
 import com.happydeer.news.utils.JSONResponse;
 import com.happydeer.news.utils.StringUtil;
 
 /**
- * Servlet implementation class AddNewsServlet
+ * Servlet implementation class AddReviewServlet
  */
-@WebServlet("/addNews")
-public class AddNewsServlet extends HttpServlet {
+@WebServlet("/addComment")
+public class AddReviewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddNewsServlet() {
+    public AddReviewServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,28 +36,31 @@ public class AddNewsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		JSONResponse jsonResponse = new JSONResponse();
 		JSONObject object = null;
-		New NEW = new New();
+		Review review = new Review();
+		int uID = 0,nID = 0;
 		try {
 			object = StringUtil.getJSON(request);
-			NEW.setUID(object.getInt("uID"));
-			NEW.setTitle(object.getString("nTitle"));
-			NEW.setType(object.getString("nType"));
-			NEW.setImg(object.getString("nImg"));
-			NEW.setContent(object.getString("nContent"));
+			review.setNID(object.getInt("nID"));
+			review.setUID(object.getInt("uID"));
+			review.setContent(object.getString("rContent"));
+			review.setPID(Integer.parseInt(StringUtil.getString(object.getString("prID"),"-1")));
 		} catch (JSONException e) {
+			jsonResponse.setStatus(JSONResponse.CILENTEORR);
+			jsonResponse.setMsg("非法json");
 			e.printStackTrace();
 		}
-		NewService newService = new NewServiceImpl();
-		int result = newService.addNews(NEW);
+		ReviewService reviewService = new ReviewServiceImpl();
+		boolean result = reviewService.review(review);
 		System.out.println(result);
-		JSONResponse jsonResponse = new JSONResponse();
-		if(result>0) {
+		
+		if(result) {
 			jsonResponse.setStatus(JSONResponse.OK);
-			jsonResponse.setMsg("新闻添加成功");
+			jsonResponse.setMsg("评论成功");
 		}else {
 			jsonResponse.setStatus(JSONResponse.SERVEREORR);
-			jsonResponse.setMsg("新闻添加失败");
+			jsonResponse.setMsg("评论失败");
 		}
 		response.setContentType("text/json;charset=utf-8");
 		response.getWriter().println(jsonResponse.toJSONString(JSONResponse.NONE));

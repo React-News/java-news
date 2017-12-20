@@ -39,4 +39,30 @@ public class StringUtil {
 			return s2;
 		return s1;
 	}
+	
+	/**
+	 * 分割字符串，为了实现 “将空串忽视并返回一个长度为0的数组”
+	 */
+	
+	public static String[] split(String s) {
+		String str = getString(s,"");
+		if("".equals(str)) {
+			String[] types = {};
+			return types;
+		}
+		return str.split(",");
+	}
+	
+	/**
+	 * 合并字符串，组装sql查询条件
+	 */
+	public static String merge(String[] arr) {
+		int len = arr.length;
+		String areas = "(";
+		for(int i=0;i<len-1;i++)
+			areas = areas+"'"+arr[i]+"',";
+		areas = areas+"'"+arr[len-1]+"')";
+		return areas;
+	}
+	
 }

@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.happydeer.news.dao.ReviewDao;
@@ -33,7 +35,7 @@ public class ReviewDaoImpl implements ReviewDao{
 			prest.setInt(1, review.getUID());
 			prest.setInt(2, review.getNID());
 			prest.setString(3, review.getContent());
-			prest.setTimestamp(4,  new Timestamp(review.getTime().getTime()));
+			prest.setTimestamp(4,  new Timestamp(new Date().getTime()));
 			result = prest.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("查询异常");
@@ -152,22 +154,23 @@ public class ReviewDaoImpl implements ReviewDao{
 	@Override
 	public int countByNID(int nID) {
 		Connection con = null;
-		PreparedStatement prest = null;
+		Statement st = null;
+		ResultSet rs = null;
 		int result = 0;
 		try {
 			con = DBUtil.getConnection();
-			String sql = "select count(*) from review where nID=?";
-			prest = con.prepareStatement(sql);
-			prest.setInt(1, nID);
-			result = prest.executeUpdate();
+			String sql = "select count(*) from review where nID="+nID;
+			st = con.createStatement();
+			rs = st.executeQuery(sql);
+			if(rs.next())result=rs.getInt(1);
 		} catch (Exception e) {
 			System.out.println("查询异常");
 			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			try {
-				if (prest != null)
-					prest.close();
+				if (st != null)
+					st.close();
 				if (con != null)
 					con.close();
 			} catch (SQLException e) {
@@ -182,15 +185,14 @@ public class ReviewDaoImpl implements ReviewDao{
 	@Override
 	public List<Review> queryReviewListByNID(int nID) {
 		Connection con = null;
-		PreparedStatement prest = null;
+		Statement st = null;
 		ResultSet rs = null;
 		List<Review> list = new ArrayList<>();
 		try {
 			con = DBUtil.getConnection();
-			String sql = "select rID,uID,nID,rContent,rTime from review where prID is null and nID=?";
-			prest = con.prepareStatement(sql);
-			prest.setInt(1, nID);
-			rs = prest.executeQuery(sql);
+			st = con.createStatement();
+			String sql = "select rID,uID,nID,rContent,rTime from review where nID="+nID+" and prID is null";
+			rs = st.executeQuery(sql);
 			Review review = new Review();
 			while (rs.next()) {
 				review.setId(rs.getInt(1));
@@ -201,13 +203,14 @@ public class ReviewDaoImpl implements ReviewDao{
 				list.add(review);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
-				if (prest != null)
-					prest.close();
+				if (st != null)
+					st.close();
 				if (con != null)
 					con.close();
 			} catch (SQLException e) {
@@ -220,15 +223,14 @@ public class ReviewDaoImpl implements ReviewDao{
 	@Override
 	public List<Review> queryPReviewListByRID(int rID) {
 		Connection con = null;
-		PreparedStatement prest = null;
+		Statement st = null;
 		ResultSet rs = null;
 		List<Review> list = new ArrayList<>();
 		try {
 			con = DBUtil.getConnection();
-			String sql = "select * from review where prID=?";
-			prest = con.prepareStatement(sql);
-			prest.setInt(1, rID);
-			rs = prest.executeQuery(sql);
+			String sql = "select * from review where prID="+rID;
+			st = con.createStatement();
+			rs = st.executeQuery(sql);
 			Review review = new Review();
 			while (rs.next()) {
 				review.setId(rs.getInt(1));
@@ -240,13 +242,53 @@ public class ReviewDaoImpl implements ReviewDao{
 				list.add(review);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
-				if (prest != null)
-					prest.close();
+				if (st != null)
+					st.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				throw new RuntimeException();
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<Review> queryMyReview(int uID) {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		List<Review> list = new ArrayList<>();
+		try {
+			con = DBUtil.getConnection();
+			String sql = "select * from review where uID="+uID;
+			st = con.createStatement();
+			rs = st.executeQuery(sql);
+			Review review = new Review();
+			while (rs.next()) {
+				review.setId(rs.getInt(1));
+				review.setUID(rs.getInt(2));
+				review.setNID(rs.getInt(3));
+				review.setContent(rs.getString(4));
+				review.setPID(rs.getInt(5));
+				review.setTime(rs.getTimestamp(6));
+				list.add(review);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
 				if (con != null)
 					con.close();
 			} catch (SQLException e) {

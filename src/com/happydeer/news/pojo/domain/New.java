@@ -17,7 +17,7 @@ public class New implements Serializable {
 	private String type;
 	private String img;
 	private String content;
-	private Date time = new Date();
+	private Date time;
 	public int getId() {
 		return id;
 	}

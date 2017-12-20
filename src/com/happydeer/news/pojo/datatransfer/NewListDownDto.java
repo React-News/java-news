@@ -7,7 +7,9 @@ import com.happydeer.news.pojo.domain.User;
 public class NewListDownDto {
 	private int NID;
 	private String title;
-	private String createdAt;
+	private String type;
+	private String img;
+	private long createdAt;
 	private CreaterInfo createrInfo; 
 	
 	public int getNID() {
@@ -26,12 +28,28 @@ public class NewListDownDto {
 		this.title = title;
 	}
 
-	public String getCreatedAt() {
-		return createdAt;
+	public String getType() {
+		return type;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public long getCreatedAt() {
+		return createdAt;
 	}
 
 	public CreaterInfo getCreaterInfo() {
@@ -42,28 +60,4 @@ public class NewListDownDto {
 		this.createrInfo = createrInfo;
 	}
 
-	public class CreaterInfo{
-		private int UID;
-		private String name;
-		private String avatar;
-		public int getUID() {
-			return UID;
-		}
-		public void setUID(int uID) {
-			UID = uID;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String getAvatar() {
-			return avatar;
-		}
-		public void setAvatar(String avatar) {
-			this.avatar = avatar;
-		}
-		
-	}
 }

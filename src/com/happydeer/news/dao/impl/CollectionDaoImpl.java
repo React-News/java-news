@@ -17,19 +17,23 @@ public class CollectionDaoImpl implements CollectionDao {
 	public int countByNID(int id) {
 		Connection con = null;
 		PreparedStatement prest = null;
+		ResultSet rs = null;
 		int result = 0;
 		try {
 			con = DBUtil.getConnection();
 			String sql = "select count(*) from collection where nID=?";
 			prest = con.prepareStatement(sql);
 			prest.setInt(1, id);
-			result = prest.executeUpdate();
+			rs = prest.executeQuery();
+			if(rs.next())result=rs.getInt(1);
 		} catch (Exception e) {
 			System.out.println("查询异常");
 			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			try {
+				if(rs!=null)
+					rs.close();
 				if (prest != null)
 					prest.close();
 				if (con != null)
